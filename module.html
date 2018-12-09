@@ -18,11 +18,10 @@
       addProduct: function (product) {
         sum += product.price
         products.push(product)
-        console.log(sum, products)
       },
       printProducts: function () {
         for (var i = 0; i < products.length; i++) {
-          console.log(products[i].price, products[i].name)
+          console.log(products[i].price, products[i].name, sum)
         }
       }
     }
