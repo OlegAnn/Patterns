@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Singleton</title>
+</head>
+<body>
+  
+</body>
+<script>
+  var Singleton = (function () {
+    var instance
+    var SERVER = 'localhost'
+
+    function Singleton () {
+      if (!instance) instance = this
+      else return instance
+    }
+    
+    Singleton.prototype.connect = function () {
+      console.log('connect' + ' ' + SERVER)
+    }
+
+    return Singleton
+
+  }())
+  var s1 = new Singleton ()
+  var s2 = new Singleton ()
+  alert(s1 === s2)
+  s2.connect()
+</script>
+</html>
