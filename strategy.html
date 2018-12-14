@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Strategy</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  </script>
+</head>
+<body>
+  <div class="catalog">
+    <select name="" id="" class="catalog__sort-type">
+      <option value="name">Name</option>
+      <option value="price">Price</option>
+      <option value="rating">Rating</option>
+    </select>
+    <button class="catalog__exec-sort">
+      Sort
+    </button>
+    <ul class="catalog__list"></ul>
+  </div>
+
+
+  <script>
+
+
+    function SortStrategy () {}
+    SortStrategy.prototype.exec = function () {}
+
+    function NameSS () {}
+    NameSS.prototype = Object.create(SortStrategy.prototype)
+    NameSS.prototype.sort = function (data) {
+      data.sort(function (a,b){
+        return (a.name > b.name) ? 1 : -1;
+      })
+    }
+
+    function PriceSS () {}
+    PriceSS.prototype = Object.create(SortStrategy.prototype)
+    PriceSS.prototype.sort = function (data) {
+      data.sort(function (a,b){
+        return (b.price - a.price);
+      })
+    }
+
+    function RatingSS () {}
+    RatingSS.prototype = Object.create(SortStrategy.prototype)
+    RatingSS.prototype.sort = function (data) {
+      data.sort(function (a,b){
+        return (b.rating - a.rating);
+      })
+    }
+    
+    var Catalog = (function () {
+      var strategy = {}
+      var data = [
+        {name: 'Coca', price: 15, rating: 4},
+        {name: 'Xleb', price: 10, rating: 3},
+        {name: 'Voda', price: 9, rating: 5},
+        {name: 'Sprite', price: 15, rating: 4},
+      ]
+
+      function printData () {
+        $('.catalog__list').empty()
+        data.forEach(function (product) {
+          $('.catalog__list').append(
+            $('<li></li>').text(product.name + "- " + product.price + "- " + product.rating)
+          )
+        });
+      }
+      
+      return {
+        sort: function () {
+          strategy.sort(data)
+          printData()
+        },
+        setStrategy: function (s) {
+          strategy = s
+          console.log(s)
+        }
+      }
+    }())
+
+    $('.catalog__sort-type').change(function(){
+      var val = $(this).val()
+      console.log(val)
+      if (val === 'name') Catalog.setStrategy( new NameSS() )
+      if (val === 'price') Catalog.setStrategy( new PriceSS() )
+      if (val === 'rating') Catalog.setStrategy( new RatingSS() )
+    })
+
+    $('.catalog__exec-sort').click(function() {
+      Catalog.sort()
+      console.log('kek')
+    })
+  
+    // var module = (function () {
+    //   var strategy = {}
+    //   var data = [
+    //     {name: 'Coca', price: '15', rating: 4},
+    //     {name: 'Xleb', price: '10', rating: 3},
+    //     {name: 'Voda', price: '9', rating: 5},
+    //     {name: 'Sprite', price: '15', rating: 4},
+    //   ]
+    //   return {
+    //     exec: function () {
+    //       strategy.exec()
+    //     },
+    //     setStrategy: function (s) {
+    //       strategy = s
+    //       console.log(s)
+    //     }
+    //   }
+    // }())
+
+    // function Strategy () {}
+    // Strategy.prototype.exec = function () {}
+
+    // function Strategy1 () {}
+    // Strategy1.prototype = Object.create(Strategy.prototype)
+    // Strategy1.prototype.exec = function () {
+    //   console.log('Odna strategiya')
+    // }
+
+    // function Strategy2 () {}
+    // Strategy2.prototype = Object.create(Strategy.prototype)
+    // Strategy2.prototype.exec = function () {
+    //   console.log('ВТорая strategiya')
+    // }
+    
+    // module.setStrategy( new Strategy1 )
+    // module.exec()
+    // module.setStrategy( new Strategy2 )
+    // module.exec()
+  </script>
+</body>
+</html>
