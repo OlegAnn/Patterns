@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Decorator</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  </script>
+  <style type="text/css">
+    .input_wrong{
+      color: red;
+    }
+    .input__field{
+      padding-right: 30px;
+    }
+    .input__clear{
+      cursor: pointer;
+      margin-left: -20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="input input_wrong">
+    <span class="input__label">Label</span>
+    <input type="text" class="input__field">
+    <span class="input__clear">x</span>
+  </div>
+</body>
+<script>
+
+  // Input ------------------------------------------------------------------------------------------------------------------------------
+  // Input ------------------------------------------------------------------------------------------------------------------------------
+  // Input ------------------------------------------------------------------------------------------------------------------------------
+
+  function Input (labelText) {
+    var $element = $('<div></div>').addClass('input').append(
+      $('<span></span>').addClass('input__label').text(labelText),
+      $('<input>').addClass('input__field')
+    )
+    this.get = function () {
+      return $element
+    };
+  }
+
+  function Decorator (obj) {
+    this._obj = obj
+    this.get = function () {
+      return this._obj.get()
+    };
+  }
+  Decorator.prototype = Object.create(Input.prototype)
+  Decorator.prototype.constructor = Decorator
+
+  // CLEAR ------------------------------------------------------------------------------------------------------------------------------
+  // CLEAR ------------------------------------------------------------------------------------------------------------------------------
+  // CLEAR ------------------------------------------------------------------------------------------------------------------------------
+
+  function ClearDec (obj) {
+    Decorator.apply(this, arguments)
+    this._obj.get().append(
+      $('<span>x</span>').addClass('input__clear')
+    )
+    $(document.body).on('click', '.input__clear', function(e) {
+      $(e.target).siblings('.input__field').val('')
+    })
+    
+  }
+  ClearDec.prototype = Object.create(Decorator.prototype)
+  ClearDec.prototype.constructor = ClearDec
+
+
+  // VALID ------------------------------------------------------------------------------------------------------------------------------
+  // VALID ------------------------------------------------------------------------------------------------------------------------------
+  // VALID ------------------------------------------------------------------------------------------------------------------------------
+
+  
+  function ValidDec (obj) {
+    Decorator.apply(this, arguments)
+
+    this._obj.get().children('.input__field').attr('data-validate', '')
+    $(document.body).on('input', '.input__field[data-validate]', function(e) {
+      if ( /[0-9]/.test( $(e.target).val() ) ) {
+        $(e.target).parent().addClass('input_wrong')
+      } else {
+        $(e.target).parent().removeClass('input_wrong')
+      }
+    })
+
+  }
+  ValidDec.prototype = Object.create(Decorator.prototype)
+  ValidDec.prototype.constructor = ValidDec
+
+
+  // CALL ------------------------------------------------------------------------------------------------------------------------------
+  // CALL ------------------------------------------------------------------------------------------------------------------------------
+  // CALL ------------------------------------------------------------------------------------------------------------------------------
+
+  var i = new Input('Simple'),
+      iClear = new ClearDec ( new Input('Clear') ),
+      iValid = new ValidDec ( new Input('Valid') ),
+      iBoth = new ValidDec (new ClearDec ( new Input('Both') ) );
+
+  $(document.body).append( i.get(), iClear.get(), iValid.get(), iBoth.get() )
+  // function A () {
+  //   this.get = function () {
+  //     console.log("I'm class A!");
+  //   };
+  // };
+
+  // function Decorator (obj) {
+  //   this._obj = obj
+  // }
+  // Decorator.prototype = Object.create(A.prototype)
+  // Decorator.prototype.constructor = Decorator
+
+  // function DecoratorB (obj) {
+  //   Decorator.call(this, obj)
+  //   this.get = function () {
+  //     this._obj.get()
+  //     console.log("Прокачанный Солидом!");
+  //   };
+  // }
+  // Decorator.prototype = Object.create(Decorator.prototype)
+  // Decorator.prototype.constructor = DecoratorB
+
+  // function DecoratorC (obj) {
+  //   Decorator.call(this, obj)
+  //   this.get = function () {
+  //     this._obj.get()
+  //     console.log("Прокаченный Брюс Ли");
+  //   };
+  // }
+  // Decorator.prototype = Object.create(Decorator.prototype)
+  // Decorator.prototype.constructor = DecoratorC
+
+  // var obj1 = new A(),
+  //     obj2 = new DecoratorB ( new A() ),
+  //     obj3 = new DecoratorC ( new A() ),
+  //     obj = new DecoratorB ( new DecoratorC ( new A () ) )
+
+  // obj1.get()
+  // console.log('A-------')
+  // obj2.get()
+  // console.log('AB-------')
+  // obj3.get()
+  // console.log('AC-------')
+  // obj.get()
+  // console.log('ACB-------')
+
+</script>
+</html>
