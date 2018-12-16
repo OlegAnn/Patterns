@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -34,18 +34,23 @@
   // Input ------------------------------------------------------------------------------------------------------------------------------
 
   function Input (labelText) {
+    console.log('Input1__get()' + new Date().getTime())
     var $element = $('<div></div>').addClass('input').append(
       $('<span></span>').addClass('input__label').text(labelText),
       $('<input>').addClass('input__field')
     )
     this.get = function () {
+      console.log('Input__get()' + new Date().getTime())
       return $element
     };
   }
 
   function Decorator (obj) {
+    console.log('Decorator1__get()' + new Date().getTime())
     this._obj = obj
     this.get = function () {
+      
+      console.log('Decorator__get()' + new Date().getTime())
       return this._obj.get()
     };
   }
@@ -57,7 +62,9 @@
   // CLEAR ------------------------------------------------------------------------------------------------------------------------------
 
   function ClearDec (obj) {
+    console.log('Clear__get()0 ' + new Date().getTime())
     Decorator.apply(this, arguments)
+    console.log('Clear__get()' + new Date().getTime())
     this._obj.get().append(
       $('<span>x</span>').addClass('input__clear')
     )
@@ -77,7 +84,7 @@
   
   function ValidDec (obj) {
     Decorator.apply(this, arguments)
-
+    console.log('Valid__get()' + new Date().getTime())
     this._obj.get().children('.input__field').attr('data-validate', '')
     $(document.body).on('input', '.input__field[data-validate]', function(e) {
       if ( /[0-9]/.test( $(e.target).val() ) ) {
@@ -101,7 +108,7 @@
       iValid = new ValidDec ( new Input('Valid') ),
       iBoth = new ValidDec (new ClearDec ( new Input('Both') ) );
 
-  $(document.body).append( i.get(), iClear.get(), iValid.get(), iBoth.get() )
+  $(document.body).append( i.get())
   // function A () {
   //   this.get = function () {
   //     console.log("I'm class A!");
